@@ -62,5 +62,11 @@ public class PlaceOpenHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion) {
+        db.execSQL("drop table if exists Province");
+        db.execSQL("drop table if exists City");
+        db.execSQL("drop table if exists County");
+        db.execSQL("drop table if exists Town");
+        db.execSQL("drop table if exists Village");
+        onCreate(db);
     }
 }

@@ -22,7 +22,7 @@ public class ChinaPlaceDB {
     /**
      * 数据库版本
      */
-    public static final int VERSION = 1;
+   // public static final int VERSION = 1;
     private static ChinaPlaceDB chinaPlaceDB;
     private SQLiteDatabase db;
 
@@ -30,9 +30,10 @@ public class ChinaPlaceDB {
      * 构造方法私有化
      */
     private ChinaPlaceDB(Context context) {
-        PlaceOpenHelper dbHelper = new PlaceOpenHelper(context,DB_NAME,null,VERSION);
+        PlaceOpenHelper dbHelper = new PlaceOpenHelper(context,DB_NAME,null,3);
         db = dbHelper.getWritableDatabase();
     }
+
     /**
      * 获取ChinaPlaceDB实例
      */
@@ -48,7 +49,7 @@ public class ChinaPlaceDB {
     public void saveProvince(Province province) {
         ContentValues values = new ContentValues();
         values.put("province_name",province.getProvinceName());
-        values.put("provincecode",province.getProvinceCode());
+        values.put("province_code",province.getProvinceCode());
         db.insert("Province", null, values);
     }
     /**
@@ -116,15 +117,17 @@ public class ChinaPlaceDB {
      * 从数据库读取某市下所有县数据
      */
     public List<County> loadCounty(int cityId) {
+      //  String id = String.valueOf(cityId);
+       // Log.d("ChinaPlaceDB","city - id :" + id);
         List<County> list = new ArrayList<County>();
         Cursor cursor = db.query("County",null,"city_id = ?",new String[] {String.valueOf(cityId)},null,null,null);
         if (cursor.moveToFirst()) {
             do {
                 County county = new County();
-                county.setCityId(cursor.getInt(cursor.getColumnIndex("id")));
+                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
-                county.getCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
-                county.getCityId(cityId);
+                county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
+                county.setCityId(cityId);
                 list.add(county);
             } while (cursor.moveToNext());
         }
@@ -147,8 +150,10 @@ public class ChinaPlaceDB {
      * 从数据库读取某县下所有城镇数据
      */
     public List<Town> loadTown(int countyId) {
+      //  String id = String.valueOf(countyId);
+       // Log.d("ChinaPlaceDB","county - id :" + id);
         List<Town> list = new ArrayList<Town>();
-        Cursor cursor = db.query("Town",null,"county_id = ?",new String[]{String.valueOf(countyId)},null,null,null);
+        Cursor cursor = db.query("Town",null,"county_id = ?",new String[]{ String.valueOf(countyId) },null,null,null);
         if (cursor.moveToFirst()) {
             do {
                 Town town = new Town();
